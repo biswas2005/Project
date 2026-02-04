@@ -6,10 +6,12 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"os"
 	"time"
 
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/gorilla/mux"
+	"github.com/joho/godotenv"
 )
 
 var db *sql.DB
@@ -31,8 +33,8 @@ type Employee struct {
 
 func connectDB() {
 	var err error
-	dsn := "root:root@tcp(127.0.0.1:3306)/emp_db?parseTime=True"
-	db, err = sql.Open("mysql", dsn)
+
+	db, err = sql.Open("mysql", os.Getenv("MYSQL_DSN"))
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -234,6 +236,8 @@ func deleteEmployee(w http.ResponseWriter, r *http.Request) {
 }
 
 func Handler() {
+	godotenv.Load()
+
 	connectDB()
 	defer db.Close()
 
