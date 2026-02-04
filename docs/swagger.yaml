@@ -1,0 +1,173 @@
+definitions:
+  project.Department:
+    properties:
+      id:
+        description: primary key
+        type: integer
+      name:
+        description: department name
+        type: string
+    type: object
+  project.Employee:
+    properties:
+      created_at:
+        description: record creation time
+        type: string
+      department_id:
+        description: Foreign key
+        type: integer
+      email:
+        description: Email address
+        type: string
+      id:
+        description: Primary key
+        type: integer
+      name:
+        description: Employee name
+        type: string
+      phone:
+        description: Phone number
+        type: string
+      salary:
+        description: Salary amount
+        type: number
+      status:
+        description: Active,Inactive
+        type: string
+    type: object
+info:
+  contact: {}
+paths:
+  /departments:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/project.Department'
+            type: array
+      summary: Get Departments
+      tags:
+      - Departments
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Department Data
+        in: body
+        name: department
+        required: true
+        schema:
+          $ref: '#/definitions/project.Department'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/project.Department'
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+      summary: Create Department
+      tags:
+      - Departments
+  /employees:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/project.Employee'
+            type: array
+      summary: Get Employees
+      tags:
+      - Employees
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Employee Data
+        in: body
+        name: employee
+        required: true
+        schema:
+          $ref: '#/definitions/project.Employee'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/project.Employee'
+      summary: Create Employee
+      tags:
+      - Employees
+  /employees/{id}:
+    delete:
+      parameters:
+      - description: Employee ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      summary: Delete Employee
+      tags:
+      - Employees
+    get:
+      parameters:
+      - description: Employee ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/project.Employee'
+        "404":
+          description: Not Found
+          schema:
+            type: string
+      summary: Get Employee by ID
+      tags:
+      - Employees
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: Employee ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Employee Data
+        in: body
+        name: employee
+        required: true
+        schema:
+          $ref: '#/definitions/project.Employee'
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      summary: Update Employee
+      tags:
+      - Employees
+swagger: "2.0"
