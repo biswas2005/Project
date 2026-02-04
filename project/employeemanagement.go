@@ -3,10 +3,12 @@ package project
 import (
 	"database/sql"
 	"encoding/json"
+	"fmt"
 	"log"
 	"net/http"
 	"time"
 
+	_ "github.com/go-sql-driver/mysql"
 	"github.com/gorilla/mux"
 )
 
@@ -29,7 +31,7 @@ type Employee struct {
 
 func connectDB() {
 	var err error
-	dsn := "root:root@tcp(127.0.0.1:3306)/emp_db"
+	dsn := "root:root@tcp(127.0.0.1:3306)/emp_db?parseTime=True"
 	db, err = sql.Open("mysql", dsn)
 	if err != nil {
 		log.Fatal(err)
@@ -105,7 +107,7 @@ func createEmployee(w http.ResponseWriter, r *http.Request) {
 
 	result, err := db.Exec(
 		query,
-		emp.Phone,
+		emp.Name,
 		emp.Email,
 		emp.Phone,
 		emp.Salary,
@@ -179,7 +181,7 @@ func getEmployeeByID(w http.ResponseWriter, r *http.Request) {
 		&e.CreatedAt,
 	)
 	if err != nil {
-		http.Error(w, "Employee not Found", http.StatusNotFound)
+		http.Error(w, fmt.Sprintf("Employee not found: %v", err), http.StatusNotFound)
 		return
 	}
 	w.Header().Set("Content-Type", "application/json")

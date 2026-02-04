@@ -1,5 +1,7 @@
 package main
 
-func main(){
+import "Project/project"
 
+func main() {
+	project.Handler()
 }
