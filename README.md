@@ -1,181 +1,187 @@
 # Employee Management System
 
-A **RESTful backend API** for managing employee records built with **Go (Golang)** and **MySQL** — designed for production-ready use, ease of setup, and real-world API integration.
-
----
-
-##  Table of Contents
-
--  [Overview](#overview)  
--  [Features](#features)  
--  [Tech Stack](#tech-stack)  
--  [Project Structure](#project-structure)  
--  [Prerequisites](#prerequisites)  
--  [Installation](#installation)  
--  [Configuration](#configuration)  
--  [Running the Application](#running-the-application)  
--  [API Endpoints](#api-endpoints)  
--  [API Examples](#api-examples)  
--  [Error Handling](#error-handling)  
--  [Deployment](#deployment)  
--  [Contributing](#contributing)  
--  [License](#license)
-
----
+A simple RESTful API built in **Go (Golang)** to manage employee data with **CRUD functionality** and persistence using a SQL database.  
+This project provides basic API endpoints to create, read, update, and delete employee records — suitable as a backend for learning, integration, or further expansion.
+***
 
 ##  Overview
 
-The **Employee Management System** is a backend service that provides a REST API for managing employees — including creating, reading, updating, and deleting employee data. The API stores data in a MySQL database and is written entirely in Go. 
-
----
-
-##  Features
-
--  CRUD operations on employee records  
--  Structured API with REST principles  
--  Database migrations included  
--  Production-ready configuration  
--  Environment-based credentials  
+This microservice implements:
+- A REST API for employee data
+- Database access via Go
+- A modular MVC-style code organization
+- Migration scripts to create the database schema
 
 ---
 
 ##  Tech Stack
 
-- **Go (Golang)** – API development  
-- **MySQL** – Relational database  
-- **Go modules** – Dependency management  
-- (Optional) Router or middleware libraries based on your code structure :contentReference[oaicite:2]{index=2}
+- **Go** — backend logic  
+- **MySQL** (or any SQL-based DB) — persistent storage  
+- **Go modules** for dependency management  
+- Simple routing via Go’s `net/http` or a router of your choice  
 
 ---
 
 ##  Project Structure
 
-/
-├── db/migrations/ # SQL migrations for database schema
-├── docs/ # Swagger/OpenAI
-├── project/ # Core application logic
-├── main.go # Entry point
-├── go.mod # Module definition
-├── go.sum # Module dependencies
-├── .gitignore
-├── LICENSE # Project license (Apache-2.0)
-└── README.md # This file
-
-
----
+├── db/migrations/       # SQL migration files to set up schema  
+├── docs/                # Project documentation (Swagger)  
+├── project/             # Core application code  
+├── main.go              # Application entrypoint  
+├── go.mod               # Module and dependencies  
+├── go.sum               # Dependency versions  
+├── .gitignore  
+└── README.md
+***
 
 ##  Prerequisites
 
-Before you begin, ensure you have the following tools installed:
+Before you begin, make sure you have:
 
--  **Go 1.18+**  
--  **MySQL Server 8+**  
--  **Git**  
--  (Optional) Migration tool like **go-migrate** or similar
+-  Go (version 1.18+)  
+-  MySQL server (or other SQL DB)  
+-  Git  
 
 ---
 
-##  Installation
+##  Database Setup
 
-### 1. Clone the repository
+1. **Create the database**
+```sql
+CREATE DATABASE IF NOT EXISTS emp_db;
+````
+
+2. **Run migration SQL files**
+   Navigate to `db/migrations/` and run the SQL scripts manually in your SQL client:
 
 ```bash
-git clone https://github.com/biswas2005/Project.git
-cd Project
-2. Install dependencies
-go mod tidy
-##   Configuration
-Create a .env file in the project root:
+mysql -u root -p emp_db < db/migrations/001_create_employees.sql
+```
 
+> Replace `001_create_employees.sql` with the actual migration filenames in your repo.
+
+---
+
+##  Configuration
+
+Create a `.env` file or use environment variables such as:
+
+```
 DB_HOST=localhost
 DB_PORT=3306
 DB_USER=root
 DB_PASSWORD=yourpassword
-DB_NAME=employeesdb
+DB_NAME=emp_db
 PORT=8080
- Update values based on your environment (e.g., production credentials). Also ensure this file is listed in .gitignore.
+```
 
-▶ Running the Application
-1. Set up the database
-In MySQL:
+Make sure this file is ignored in `.gitignore`.
 
-CREATE DATABASE employeesdb;
-Then run your migration scripts (in db/migrations/):
+---
 
-# Example if using a migration tool:
-go run db/migrations/*.go
-Adjust based on your chosen migration process.
+##  Run the Application
 
-2. Start the server
+From your project root:
+
+```bash
+go mod tidy
 go run main.go
-The API should start on http://localhost:8080 (or your configured PORT).
+```
 
- API Endpoints
-Method	Endpoint	Description
-GET	/employees	Get all employees
-GET	/employees/:id	Get a single employee
-POST	/employees	Add a new employee
-PUT	/employees/:id	Update an existing employee
-DELETE	/employees/:id	Delete an employee
-Replace :id with the employee’s unique identifier.
+By default, your API will run at:
 
- API Examples (cURL)
-Create a new employee
-curl -X POST http://localhost:8080/employees \
--H "Content-Type: application/json" \
--d '{
-  "name": "Alice Smith",
-  "email": "alice@example.com",
-  "position": "Developer"
-}'
-Get all employees
+```
+http://localhost:8080
+```
+
+---
+
+##  API Endpoints
+
+| Method | Endpoint          | Description                 |  
+| ------ | ----------------- | --------------------------- |  
+| GET    | `/employees`      | Get all employees           |  
+| GET    | `/employees/{id}` | Get a specific employee     |  
+| POST   | `/employees`      | Create a new employee       |  
+| PUT    | `/employees/{id}` | Update an existing employee |  
+| DELETE | `/employees/{id}` | Delete an employee          |  
+
+---
+
+##  Example Requests
+
+### Create an employee
+
+```bash
+curl -X POST http://localhost:8080/employees ^
+-H "Content-Type: application/json" 
+-d "{\"name\":\"Alice Johnson\",\"email\":\"alice@example.com\",\"phone\":\"9876543210\",\"salary\":75000,\"department_id\":1,\"status\":\"Active\"}"
+
+```
+
+### Get all employees
+
+```bash
 curl http://localhost:8080/employees
-Update an employee
-curl -X PUT http://localhost:8080/employees/1 \
--H "Content-Type: application/json" \
--d '{
-  "name": "Alice Johnson",
-  "position": "Senior Developer"
-}'
-Delete an employee
+```
+### Get employee by ID
+```bash
+curl http://localhost:8080/employee/1
+```
+
+### Update an employee
+
+```bash
+curl -X PUT http://localhost:8080/employees/1 ^
+-H "Content-Type: application/json" ^
+-d "{\"name\":\"Mark Henry\",\"email\":\"henry@example.com\",\"phone\":\"0123456780\",\"salary\":75000,\"department_id\":1,\"status\":\"Active\"}"
+
+```
+
+### Delete an employee
+
+```bash
 curl -X DELETE http://localhost:8080/employees/1
- Error Handling
-The API returns standard HTTP status codes:
+```
 
-Status	Meaning
-200	Success
-201	Resource created
-400	Bad request
-404	Not found
-500	Server error
-Be sure to handle responses accordingly in client apps.
+---
 
- Deployment
-Docker (optional)
-Create a Dockerfile:
+##  Status Codes
 
-FROM golang:1.20-alpine
-WORKDIR /app
-COPY . .
-RUN go build -o app .
-CMD ["./app"]
-Build and run:
+| Code | Meaning      |
+| ---- | ------------ |
+| 200  | OK           |
+| 201  | Created      |
+| 400  | Bad Request  |
+| 404  | Not Found    |
+| 500  | Server Error |
 
-docker build -t employee-api .
-docker run -p 8080:8080 employee-api
- Contributing
-We welcome contributions:
+---
 
-Fork the repo
 
-Create a branch: git checkout -b feature/foo
+##  Contributing
 
-Commit changes: git commit -m "Add feature"
+Contributions are welcome!
 
-Push: git push origin feature/foo
+1. Fork the repository
+2. Create a feature branch
+3. Commit changes
+4. Push and open a Pull Request
 
-Create a pull request
+---
 
- License
-This project is licensed under Apache-2.0 License — see the LICENSE file for details. 
+##  License
+
+This project is licensed under **Apache-2.0 License**. ([GitHub][1])
+
+---
+
+##  Thanks
+
+Thank you for visiting the Employee Management System repository.
+Feel free to reach out if you want help setting up, extending, or deploying this project!
+
+
+
 
