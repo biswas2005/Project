@@ -11,32 +11,33 @@ import (
 	"strings"
 	"time"
 
-	_ "github.com/go-sql-driver/mysql" //MySQL driver
-	"github.com/gorilla/mux"           //HTTP router
-	"github.com/joho/godotenv"         //load .env file
+	_ "github.com/go-sql-driver/mysql" 
+	"github.com/gorilla/mux"           
+	"github.com/joho/godotenv"         
+	
 
 	_ "Project/docs"
 
 	httpSwagger "github.com/swaggo/http-swagger"
 )
 
-// Global DB connection
+
 var db *sql.DB
 
-// Department model
+
 type Department struct {
-	ID   int    `json:"id"`   //primary key
-	Name string `json:"name"` //department name
+	ID   int    `json:"id"`   
+	Name string `json:"name"` 
 }
 type Employee struct {
-	ID           int       `json:"id"`            //Primary key
-	Name         string    `json:"name"`          //Employee name
-	Email        string    `json:"email"`         //Email address
-	Phone        string    `json:"phone"`         //Phone number
-	Salary       float64   `json:"salary"`        //Salary amount
-	DepartmentID int       `json:"department_id"` //Foreign key
-	Status       string    `json:"status"`        //Active,Inactive
-	CreatedAt    time.Time `json:"created_at"`    //record creation time
+	ID           int       `json:"id"`            
+	Name         string    `json:"name"`          
+	Email        string    `json:"email"`        
+	Phone        string    `json:"phone"`         
+	Salary       float64   `json:"salary"`        
+	DepartmentID int       `json:"department_id"` 
+	Status       string    `json:"status"`        
+	CreatedAt    time.Time `json:"created_at"`    
 }
 
 // Establish connection to MySQL database
